@@ -1,19 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { PlayCircleIcon, PaletteIcon, BookOpenIcon, VideoIcon, ArrowRightIcon } from "lucide-react";
+import {
+  PlayCircleIcon,
+  PaletteIcon,
+  BookOpenIcon,
+  VideoIcon,
+  ArrowRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react";
 import {
   REVIEW_VIDEO,
   PAINTING_FRAGMENTS,
   SAPPHIRE,
+  BRANDS,
+  brandByKey,
   VLOGS,
   teamById,
 } from "@/lib/data";
-import type { SapphireCard } from "@/lib/types";
+import type { SapphireEntry } from "@/lib/types";
 import { SectionShell } from "@/components/site/section-shell";
 import { VideoPlaceholder } from "@/components/media/video-placeholder";
 import { MarqueeRow } from "@/components/media/marquee-row";
 import { PaintingPanel } from "@/components/media/painting-panel";
+import { BrandArt } from "@/components/media/brand-art";
 import { SceneArt } from "@/components/media/scene-art";
 import { Modal } from "@/components/ui-bits/modal";
 import { cn } from "@/lib/utils";
@@ -25,15 +36,6 @@ type Detail =
   | { kind: "fragment"; id: string }
   | { kind: "sapphire-team"; teamId: string }
   | { kind: "vlog"; id: string };
-
-const KIND_COLOR: Record<SapphireCard["kind"], string> = {
-  场景卡: "#1B4F8A",
-  用户洞察卡: "#2E7D6B",
-  问题定义卡: "#7A5BA6",
-  创意方案卡: "#F28C28",
-  内容种草卡: "#C0492B",
-  行动落地卡: "#D6A94B",
-};
 
 /** 统一媒体带高度(封面与滚动条等高) */
 const BAND = "h-56";
@@ -163,16 +165,19 @@ export function OutcomesSection() {
               icon={<BookOpenIcon className="size-3.5" />}
               label="SAPPHIRE BOOK"
               title="火凤成长蓝宝书"
-              hint="8 组创新课题的成果卡集。点击查看全部课题与卡片。"
+              hint="4 主品牌 · 8 组课题 · 入职前的品牌行动指南"
               accent="#1B4F8A"
               onClick={() => setListView("sapphire-all")}
             >
               <div className="relative h-full w-full bg-gradient-to-br from-[var(--brand-navy)] to-[var(--brand-navy-deep)]">
                 <div className="absolute inset-0 brand-glow" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
-                  <BookOpenIcon className="size-8 text-[var(--brand-gold)]" />
-                  <p className="mt-2 text-sm font-bold text-white">成长蓝宝书</p>
-                  <p className="mt-0.5 text-[10px] tracking-[0.2em] text-[var(--brand-gold)]/80">8 课题 · 创新成果卡集</p>
+                <BookOpenIcon className="absolute right-3 top-3 size-7 text-[var(--brand-gold)]/70" />
+                <div className="absolute left-4 top-4 flex flex-col gap-1">
+                  {BRANDS.map((b) => (
+                    <span key={b.key} className="w-fit rounded px-1.5 py-0.5 text-[9px] font-semibold text-white" style={{ background: b.color }}>
+                      {b.name}
+                    </span>
+                  ))}
                 </div>
               </div>
             </CoverCard>
@@ -180,37 +185,40 @@ export function OutcomesSection() {
         >
           <MarqueeRow
             items={SAPPHIRE}
-            durationSec={50}
+            durationSec={52}
             reverse
             itemClassName="w-72"
             renderItem={(e) => {
               const team = teamById(e.teamId);
+              const brand = brandByKey(e.brand);
               return (
                 <button
                   type="button"
                   onClick={() => setDetail({ kind: "sapphire-team", teamId: e.teamId })}
-                  className={cn("card-hover flex w-72 flex-col overflow-hidden rounded-xl bg-white/[.05] p-4 text-left ring-1 ring-white/10", BAND)}
+                  className={cn("card-hover flex w-72 flex-col overflow-hidden rounded-xl bg-white/[.05] text-left ring-1 ring-white/10", BAND)}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-md text-[11px] font-bold text-white" style={{ background: team.color }}>
-                      {team.no}
+                  <div className="relative h-24 w-full shrink-0">
+                    <BrandArt brand={e.brand} en={brand.en} showLabel={false} className="h-full w-full" rounded="rounded-none" />
+                    <span className="absolute left-2 top-2 rounded-md px-2 py-0.5 text-[10px] font-bold text-white" style={{ background: brand.color }}>
+                      {brand.name}
                     </span>
-                    <span className="text-sm font-semibold text-white">{team.name}</span>
                   </div>
-                  <p className="mt-2 line-clamp-1 text-sm font-bold text-white/90">{e.topic}</p>
-                  <p className="mt-1 line-clamp-3 flex-1 text-xs leading-relaxed text-white/55">{e.cards[1].body}</p>
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {e.cards.map((c) => (
-                      <span key={c.id} className="rounded-full px-2 py-0.5 text-[10px] font-medium text-white" style={{ background: KIND_COLOR[c.kind] }}>
-                        {c.kind}
-                      </span>
-                    ))}
+                  <div className="flex flex-1 flex-col p-3">
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full" style={{ background: team.color }} />
+                      <span className="text-[12px] font-semibold text-white">{team.name}</span>
+                    </div>
+                    <p className="mt-1 line-clamp-2 flex-1 text-sm font-bold text-white/90">{e.topic}</p>
+                    <div className="mt-1.5 flex items-center justify-between">
+                      <span className="truncate text-[11px] text-white/45">参考 · {e.direction}</span>
+                      <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-[var(--brand-gold)]">{e.pages.length} 页</span>
+                    </div>
                   </div>
                 </button>
               );
             }}
           />
-          <p className="mt-3 text-center text-xs text-white/45">← 每个小组一个课题 · 点击查看完整成果卡 →</p>
+          <p className="mt-3 text-center text-xs text-white/45">← 4 主品牌 · 每品牌 2 组各自选题 · 点击翻阅 6 页课题汇报 →</p>
         </RowFrame>
 
         {/* 行三:学习 Vlog */}
@@ -328,22 +336,39 @@ function OutcomeModals({
       )}
 
       {listView === "sapphire-all" && (
-        <Modal open onClose={closeList} className="max-w-2xl">
+        <Modal open onClose={closeList} className="max-w-3xl">
           <div className="p-6">
-            <span className="kicker text-[var(--brand-navy)]">SAPPHIRE BOOK</span>
-            <h3 className="mt-1 text-xl font-bold text-[var(--brand-navy-deep)]">火凤成长蓝宝书 · 8 课题</h3>
-            <p className="mt-1 text-sm text-foreground/55">点击任一课题查看小组完整成果卡。</p>
-            <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {SAPPHIRE.map((e) => {
-                const team = teamById(e.teamId);
+            <span className="kicker text-[var(--brand-navy)]">SAPPHIRE BOOK · 蓝宝书</span>
+            <h3 className="mt-1 text-xl font-bold text-[var(--brand-navy-deep)]">4 主品牌 · 8 组课题</h3>
+            <p className="mt-1 text-sm leading-relaxed text-foreground/55">
+              每个主品牌由 2 个小组各自独立选题(围绕品牌服饰展开),最终汇集成入职前为各品牌写下的《行动指南》。点击任一课题翻阅其 6 页汇报。
+            </p>
+            <div className="mt-4 space-y-3">
+              {BRANDS.map((b) => {
+                const entries = SAPPHIRE.filter((e) => e.brand === b.key);
                 return (
-                  <button key={e.teamId} type="button" onClick={() => setDetail({ kind: "sapphire-team", teamId: e.teamId })} className="card-hover rounded-xl bg-secondary p-3 text-left ring-1 ring-foreground/8">
-                    <div className="flex items-center gap-2">
-                      <span className="flex h-6 w-6 items-center justify-center rounded-md text-[11px] font-bold text-white" style={{ background: team.color }}>{team.no}</span>
-                      <span className="text-sm font-semibold text-[var(--brand-navy-deep)]">{team.name}</span>
+                  <div key={b.key} className="overflow-hidden rounded-xl ring-1 ring-foreground/8">
+                    <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: `color-mix(in oklab, ${b.color} 14%, transparent)` }}>
+                      <span className="flex h-6 w-6 items-center justify-center rounded-md text-[11px] font-bold text-white" style={{ background: b.color }}>{b.name[0]}</span>
+                      <span className="text-sm font-bold text-[var(--brand-navy-deep)]">{b.name}</span>
+                      <span className="truncate text-[11px] text-foreground/45">{b.en} · {b.tagline}</span>
                     </div>
-                    <p className="mt-1.5 text-[13px] font-medium text-foreground/80">{e.topic}</p>
-                  </button>
+                    <div className="grid grid-cols-1 gap-2.5 p-3 sm:grid-cols-2">
+                      {entries.map((e) => {
+                        const team = teamById(e.teamId);
+                        return (
+                          <button key={e.teamId} type="button" onClick={() => setDetail({ kind: "sapphire-team", teamId: e.teamId })} className="card-hover rounded-lg bg-secondary p-3 text-left ring-1 ring-foreground/8">
+                            <div className="flex items-center gap-1.5">
+                              <span className="h-2.5 w-2.5 rounded-full" style={{ background: team.color }} />
+                              <span className="text-[12px] font-semibold text-[var(--brand-navy-deep)]">{team.name}</span>
+                              <span className="ml-auto rounded-full bg-foreground/8 px-1.5 py-0.5 text-[10px] text-foreground/50">{e.pages.length} 页</span>
+                            </div>
+                            <p className="mt-1 text-[13px] font-medium text-foreground/80">{e.topic}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -402,23 +427,8 @@ function OutcomeModals({
       )}
 
       {sapphireTeam && (
-        <Modal open onClose={closeDetail} className="max-w-lg">
-          <div className="p-6">
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-md text-xs font-bold text-white" style={{ background: teamById(sapphireTeam.teamId).color }}>{teamById(sapphireTeam.teamId).no}</span>
-              <span className="text-sm font-semibold text-foreground/70">{teamById(sapphireTeam.teamId).name} · {teamById(sapphireTeam.teamId).en}</span>
-            </div>
-            <h3 className="mt-2 text-xl font-bold text-[var(--brand-navy-deep)]">{sapphireTeam.topic}</h3>
-            <div className="mt-4 space-y-3">
-              {sapphireTeam.cards.map((c) => (
-                <div key={c.id} className="rounded-xl bg-secondary p-4 ring-1 ring-foreground/8">
-                  <span className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-white" style={{ background: KIND_COLOR[c.kind] }}>{c.kind}</span>
-                  <p className="mt-2 text-sm font-bold text-[var(--brand-navy-deep)]">{c.title}</p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-foreground/70">{c.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <Modal open onClose={closeDetail} className="max-w-2xl">
+          <SapphireReport entry={sapphireTeam} />
         </Modal>
       )}
 
@@ -436,5 +446,88 @@ function OutcomeModals({
         </Modal>
       )}
     </>
+  );
+}
+
+/** 蓝宝书课题汇报:6 页(A5/PPT)翻阅器 */
+function SapphireReport({ entry }: { entry: SapphireEntry }) {
+  const [i, setI] = useState(0);
+  const team = teamById(entry.teamId);
+  const brand = brandByKey(entry.brand);
+  const n = entry.pages.length;
+  const page = entry.pages[i];
+  const isCover = page.kind === "封面";
+
+  return (
+    <div className="p-6">
+      {/* 页眉:品牌 + 小组 + 页码 */}
+      <div className="flex items-center gap-2">
+        <span className="rounded-md px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: brand.color }}>{brand.name}</span>
+        <span className="h-2.5 w-2.5 rounded-full" style={{ background: team.color }} />
+        <span className="text-sm font-semibold text-foreground/70">{team.name}</span>
+        <span className="tnum ml-auto text-xs text-foreground/45">{i + 1} / {n}</span>
+      </div>
+      <p className="mt-2 text-[11px] text-foreground/45">课题 · {entry.topic}　|　参考方向 · {entry.direction}</p>
+
+      {/* A5/PPT 页面 */}
+      <div key={i} className="rise-in mt-3 overflow-hidden rounded-xl ring-1 ring-foreground/10">
+        <div className="h-1.5 w-full" style={{ background: brand.color }} />
+        <div className="relative min-h-[240px] bg-white p-6" style={{ borderLeft: `3px solid ${brand.color}` }}>
+          <span className="big-num pointer-events-none absolute right-4 top-2 text-6xl text-foreground/[0.05]">
+            {String(page.no).padStart(2, "0")}
+          </span>
+          {isCover ? (
+            <div className="flex min-h-[200px] flex-col items-center justify-center text-center">
+              <span className="text-[11px] font-semibold tracking-[0.28em]" style={{ color: brand.color }}>{brand.en}</span>
+              <h3 className="mt-3 text-2xl font-bold leading-snug text-[var(--brand-navy-deep)]">{entry.topic}</h3>
+              <p className="mt-3 max-w-md text-sm text-foreground/60">{page.body}</p>
+              <p className="mt-4 text-[11px] text-foreground/40">{team.name} · 蓝宝书课题汇报 · 共 {n} 页</p>
+            </div>
+          ) : (
+            <div className="relative">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-white" style={{ background: brand.color }}>
+                {String(page.no).padStart(2, "0")} · {page.kind}
+              </span>
+              <p className="mt-3 text-lg font-bold text-[var(--brand-navy-deep)]">{page.title}</p>
+              <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-foreground/75">{page.body}</p>
+            </div>
+          )}
+          <span className="absolute bottom-3 right-4 text-[10px] tracking-wide text-foreground/30">A5 · 第 {page.no} 页</span>
+        </div>
+      </div>
+
+      {/* 翻页 */}
+      <div className="mt-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => setI((v) => Math.max(0, v - 1))}
+          disabled={i === 0}
+          className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-[13px] font-medium text-foreground/70 ring-1 ring-foreground/10 transition disabled:opacity-35"
+        >
+          <ChevronLeftIcon className="size-4" /> 上一页
+        </button>
+        <div className="flex items-center gap-1.5">
+          {entry.pages.map((p, idx) => (
+            <button
+              key={p.no}
+              type="button"
+              onClick={() => setI(idx)}
+              aria-label={`第 ${p.no} 页`}
+              className={cn("h-1.5 rounded-full transition-all", idx === i ? "w-5" : "w-1.5 bg-foreground/20 hover:bg-foreground/40")}
+              style={idx === i ? { background: brand.color } : undefined}
+            />
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => setI((v) => Math.min(n - 1, v + 1))}
+          disabled={i === n - 1}
+          className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-[13px] font-medium text-foreground/70 ring-1 ring-foreground/10 transition disabled:opacity-35"
+        >
+          下一页 <ChevronRightIcon className="size-4" />
+        </button>
+      </div>
+      <p className="mt-3 text-center text-[11px] text-foreground/40">《火凤成长蓝宝书》· {brand.name} · {team.name} 课题汇报</p>
+    </div>
   );
 }

@@ -104,19 +104,33 @@ export interface PaintingFragment {
   text: string; // 该块画面解读 + 小组创作说明
 }
 
-/** 蓝宝书课题卡 */
-export interface SapphireCard {
-  id: string;
-  teamId: string;
-  kind: "场景卡" | "用户洞察卡" | "问题定义卡" | "创意方案卡" | "内容种草卡" | "行动落地卡";
+/** 蓝宝书:四个主品牌(每品牌 2 个小组,各自独立选题) */
+export type BrandKey = "saintangelo" | "hazzys" | "camicissima" | "lafuma";
+
+export interface Brand {
+  key: BrandKey;
+  name: string; // 报喜鸟
+  en: string; // SAINT ANGELO
+  tagline: string; // 一句品牌定位
+  desc: string; // 品类说明
+  color: string;
+}
+
+/** 蓝宝书一页(6~8 页组成一份课题汇报,相当于 A5/PPT) */
+export interface SapphirePage {
+  no: number;
+  kind: string; // 封面 / 用户洞察 / 人群与场景 / 核心策略 / 落地动作 / 行动指南
   title: string;
   body: string;
 }
 
+/** 一个小组的蓝宝书课题(基于所属品牌,自选具体话题) */
 export interface SapphireEntry {
   teamId: string;
-  topic: string;
-  cards: SapphireCard[];
+  brand: BrandKey;
+  topic: string; // 该组自定的具体话题
+  direction: string; // 参考的创新课题方向
+  pages: SapphirePage[]; // 6~8 页
 }
 
 /** 小组 VLOG */
