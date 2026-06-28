@@ -7,8 +7,6 @@ import {
   BookOpenIcon,
   VideoIcon,
   ArrowRightIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
 } from "lucide-react";
 import {
   REVIEW_VIDEO,
@@ -449,85 +447,60 @@ function OutcomeModals({
   );
 }
 
-/** 蓝宝书课题汇报:6 页(A5/PPT)翻阅器 */
+/** 蓝宝书课题汇报:6 页(A5)竖向滚动翻阅 */
 function SapphireReport({ entry }: { entry: SapphireEntry }) {
-  const [i, setI] = useState(0);
   const team = teamById(entry.teamId);
   const brand = brandByKey(entry.brand);
   const n = entry.pages.length;
-  const page = entry.pages[i];
-  const isCover = page.kind === "封面";
 
   return (
     <div className="p-6">
-      {/* 页眉:品牌 + 小组 + 页码 */}
-      <div className="flex items-center gap-2">
-        <span className="rounded-md px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: brand.color }}>{brand.name}</span>
-        <span className="h-2.5 w-2.5 rounded-full" style={{ background: team.color }} />
-        <span className="text-sm font-semibold text-foreground/70">{team.name}</span>
-        <span className="tnum ml-auto text-xs text-foreground/45">{i + 1} / {n}</span>
-      </div>
-      <p className="mt-2 text-[11px] text-foreground/45">课题 · {entry.topic}　|　参考方向 · {entry.direction}</p>
-
-      {/* A5/PPT 页面 */}
-      <div key={i} className="rise-in mt-3 overflow-hidden rounded-xl ring-1 ring-foreground/10">
-        <div className="h-1.5 w-full" style={{ background: brand.color }} />
-        <div className="relative min-h-[240px] bg-white p-6" style={{ borderLeft: `3px solid ${brand.color}` }}>
-          <span className="big-num pointer-events-none absolute right-4 top-2 text-6xl text-foreground/[0.05]">
-            {String(page.no).padStart(2, "0")}
-          </span>
-          {isCover ? (
-            <div className="flex min-h-[200px] flex-col items-center justify-center text-center">
-              <span className="text-[11px] font-semibold tracking-[0.28em]" style={{ color: brand.color }}>{brand.en}</span>
-              <h3 className="mt-3 text-2xl font-bold leading-snug text-[var(--brand-navy-deep)]">{entry.topic}</h3>
-              <p className="mt-3 max-w-md text-sm text-foreground/60">{page.body}</p>
-              <p className="mt-4 text-[11px] text-foreground/40">{team.name} · 蓝宝书课题汇报 · 共 {n} 页</p>
-            </div>
-          ) : (
-            <div className="relative">
-              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-white" style={{ background: brand.color }}>
-                {String(page.no).padStart(2, "0")} · {page.kind}
-              </span>
-              <p className="mt-3 text-lg font-bold text-[var(--brand-navy-deep)]">{page.title}</p>
-              <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-foreground/75">{page.body}</p>
-            </div>
-          )}
-          <span className="absolute bottom-3 right-4 text-[10px] tracking-wide text-foreground/30">A5 · 第 {page.no} 页</span>
+      {/* 页眉:品牌 + 小组 + 课题(滚动时吸顶) */}
+      <div className="sticky top-0 z-10 -mx-6 -mt-6 mb-1 border-b border-foreground/8 bg-card/95 px-6 pb-3 pt-6 backdrop-blur">
+        <div className="flex items-center gap-2">
+          <span className="rounded-md px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: brand.color }}>{brand.name}</span>
+          <span className="h-2.5 w-2.5 rounded-full" style={{ background: team.color }} />
+          <span className="text-sm font-semibold text-foreground/70">{team.name}</span>
+          <span className="ml-auto rounded-full bg-foreground/8 px-2 py-0.5 text-[11px] text-foreground/50">共 {n} 页 · 上下滑动</span>
         </div>
+        <p className="mt-1.5 truncate text-[12px] text-foreground/50">课题 · {entry.topic}　|　参考方向 · {entry.direction}</p>
       </div>
 
-      {/* 翻页 */}
-      <div className="mt-4 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => setI((v) => Math.max(0, v - 1))}
-          disabled={i === 0}
-          className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-[13px] font-medium text-foreground/70 ring-1 ring-foreground/10 transition disabled:opacity-35"
-        >
-          <ChevronLeftIcon className="size-4" /> 上一页
-        </button>
-        <div className="flex items-center gap-1.5">
-          {entry.pages.map((p, idx) => (
-            <button
-              key={p.no}
-              type="button"
-              onClick={() => setI(idx)}
-              aria-label={`第 ${p.no} 页`}
-              className={cn("h-1.5 rounded-full transition-all", idx === i ? "w-5" : "w-1.5 bg-foreground/20 hover:bg-foreground/40")}
-              style={idx === i ? { background: brand.color } : undefined}
-            />
-          ))}
-        </div>
-        <button
-          type="button"
-          onClick={() => setI((v) => Math.min(n - 1, v + 1))}
-          disabled={i === n - 1}
-          className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-[13px] font-medium text-foreground/70 ring-1 ring-foreground/10 transition disabled:opacity-35"
-        >
-          下一页 <ChevronRightIcon className="size-4" />
-        </button>
+      {/* 全部页面竖向堆叠,滚动阅读 */}
+      <div className="mt-4 space-y-4">
+        {entry.pages.map((page) => {
+          const isCover = page.kind === "封面";
+          return (
+            <div key={page.no} className="overflow-hidden rounded-xl ring-1 ring-foreground/10">
+              <div className="h-1.5 w-full" style={{ background: brand.color }} />
+              <div className="relative bg-white p-6" style={{ borderLeft: `3px solid ${brand.color}` }}>
+                <span className="big-num pointer-events-none absolute right-4 top-1 text-6xl text-foreground/[0.05]">
+                  {String(page.no).padStart(2, "0")}
+                </span>
+                {isCover ? (
+                  <div className="flex flex-col items-center justify-center py-6 text-center">
+                    <span className="text-[11px] font-semibold tracking-[0.28em]" style={{ color: brand.color }}>{brand.en}</span>
+                    <h3 className="mt-3 text-2xl font-bold leading-snug text-[var(--brand-navy-deep)]">{entry.topic}</h3>
+                    <p className="mt-3 max-w-md text-sm text-foreground/60">{page.body}</p>
+                    <p className="mt-4 text-[11px] text-foreground/40">{team.name} · 蓝宝书课题汇报 · 共 {n} 页</p>
+                  </div>
+                ) : (
+                  <div className="relative">
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-white" style={{ background: brand.color }}>
+                      {String(page.no).padStart(2, "0")} · {page.kind}
+                    </span>
+                    <p className="mt-3 text-lg font-bold text-[var(--brand-navy-deep)]">{page.title}</p>
+                    <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-foreground/75">{page.body}</p>
+                  </div>
+                )}
+                <span className="mt-4 block text-right text-[10px] tracking-wide text-foreground/30">A5 · 第 {page.no} 页 / 共 {n} 页</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <p className="mt-3 text-center text-[11px] text-foreground/40">《火凤成长蓝宝书》· {brand.name} · {team.name} 课题汇报</p>
+
+      <p className="mt-4 text-center text-[11px] text-foreground/40">《火凤成长蓝宝书》· {brand.name} · {team.name} 课题汇报</p>
     </div>
   );
 }
