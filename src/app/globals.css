@@ -1,0 +1,387 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* === 火凤成长舱 · 品牌主题 token === */
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-navy-deep: var(--brand-navy-deep);
+  --color-brand-navy-soft: var(--brand-navy-soft);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-cream: var(--brand-cream);
+  --color-brand-mist: var(--brand-mist);
+  --color-brand-line: var(--brand-line);
+}
+
+:root {
+  /* === 报喜鸟 / 火凤品牌色 === */
+  --brand-navy: #003B7A;        /* 主深蓝 */
+  --brand-navy-deep: #0B1F3A;   /* 深邃蓝(大屏底色) */
+  --brand-navy-soft: #1B4F8A;   /* 柔和蓝(hover/二级) */
+  --brand-orange: #F28C28;      /* 火凤橙 */
+  --brand-gold: #D6A94B;        /* 火凤金 */
+  --brand-cream: #FAF7F0;       /* 米白底 */
+  --brand-mist: #F1F3F7;        /* 冷灰白底 */
+  --brand-line: #E1B870;        /* 商务剪裁线/针脚线金 */
+
+  /* === shadcn baseline,主色映射到报喜鸟蓝 === */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #003B7A;
+  --primary-foreground: #ffffff;
+  --secondary: #F1F3F7;
+  --secondary-foreground: #0B1F3A;
+  --muted: #F1F3F7;
+  --muted-foreground: oklch(0.45 0 0);
+  --accent: #F28C28;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0 0);
+  --input: oklch(0.92 0 0);
+  --ring: #003B7A;
+  /* Recharts 用色:深蓝主调 + 橙金强调 + 冷暖辅色 */
+  --chart-1: #003B7A;
+  --chart-2: #F28C28;
+  --chart-3: #1B4F8A;
+  --chart-4: #D6A94B;
+  --chart-5: #5A7DA8;
+  --radius: 0.625rem;
+  --sidebar: #0B1F3A;
+  --sidebar-foreground: #E6ECF5;
+  --sidebar-primary: #F28C28;
+  --sidebar-primary-foreground: #0B1F3A;
+  --sidebar-accent: #1B4F8A;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255,255,255,.08);
+  --sidebar-ring: #F28C28;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply text-foreground;
+    font-family: var(--font-sans), "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    /* 全站统一连续背景:固定锚定视口,任意页面/区块滚动均无缝,无交接硬边 */
+    color: #E8EEF6;
+    background-color: #0a1a31;
+    background-image:
+      radial-gradient(1100px 780px at 84% -10%, rgba(242, 140, 40, 0.13), transparent 60%),
+      radial-gradient(1000px 760px at -8% 108%, rgba(27, 79, 138, 0.36), transparent 58%),
+      linear-gradient(180deg, #0b1f3a 0%, #0a1a31 45%, #081627 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* === 火凤装饰 utility === */
+/* 金色虚线分隔:用于区块之间的精致分割(配合两端渐隐遮罩) */
+.brand-dash {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--brand-gold) 0 7px,
+    transparent 7px 15px
+  );
+  opacity: 0.55;
+}
+
+/* 商务剪裁线:细金色虚线,出现在卡片底/分隔区 */
+.cut-line {
+  background-image: linear-gradient(to right, var(--brand-line) 50%, transparent 50%);
+  background-size: 8px 1px;
+  background-repeat: repeat-x;
+  background-position: left center;
+  height: 1px;
+}
+
+/* 针脚线:更密的金色虚线,装饰边 */
+.stitch-line {
+  border-top: 1.5px dashed var(--brand-gold);
+  opacity: .7;
+}
+
+/* 火凤羽翼装饰:大屏背景流光(用作 ::before) */
+.brand-glow {
+  position: relative;
+  overflow: hidden;
+}
+.brand-glow::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto auto;
+  width: 55%;
+  height: 70%;
+  background: radial-gradient(closest-side, rgba(242,140,40,.18), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.brand-glow::after {
+  content: "";
+  position: absolute;
+  inset: auto auto -25% -15%;
+  width: 50%;
+  height: 60%;
+  background: radial-gradient(closest-side, rgba(214,169,75,.14), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.brand-glow > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 区块透明,复用 body 的全站连续背景(避免逐区块渐变交接硬边) */
+.bg-stage {
+  background: transparent;
+  color: #E8EEF6;
+}
+
+/* 米白/冷灰白底(学员端 + 运营端) */
+.bg-cream { background-color: var(--brand-cream); }
+.bg-mist { background-color: var(--brand-mist); }
+
+/* 30 周年时间轴 utility(用于学习旅程页) */
+.timeline-rail {
+  position: relative;
+}
+.timeline-rail::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--brand-navy) 0%, var(--brand-orange) 100%);
+  transform: translateY(-50%);
+  opacity: .35;
+}
+
+/* 卡片悬浮(学员卡片 + 成果卡 共用) */
+.card-hover {
+  transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease, border-color .25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px -16px rgba(11,31,58,.25);
+  border-color: var(--brand-gold);
+}
+
+/* 数字醒目(大屏 KPI) */
+.big-num {
+  font-family: var(--font-sans), "PingFang SC", system-ui, sans-serif;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* 火凤橙金 chip */
+.fire-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--brand-orange), var(--brand-gold));
+  color: #fff;
+  letter-spacing: .04em;
+}
+
+/* =====================================================================
+   凤凰成长展 · 新平台扩展 utilities
+   ===================================================================== */
+
+/* 平滑滚动 + sticky 导航偏移(小板块切换用) */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+}
+
+/* 隐藏滚动条(横向作品条/轮播) */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* 优雅细滚动条(明细面板) */
+.scrollbar-elegant::-webkit-scrollbar { width: 8px; height: 8px; }
+.scrollbar-elegant::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--brand-navy) 30%, transparent);
+  border-radius: 999px;
+}
+.scrollbar-elegant::-webkit-scrollbar-track { background: transparent; }
+
+/* 跑马灯:无限横向滚动(成果作品条) */
+@keyframes marquee-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.animate-marquee { animation: marquee-x var(--marquee-duration, 40s) linear infinite; }
+.marquee-paused:hover .animate-marquee { animation-play-state: paused; }
+
+/* 横向轮播自动滚动(照片墙备用) */
+@keyframes drift-x { from { transform: translateX(0); } to { transform: translateX(calc(-1 * var(--drift, 50%))); } }
+
+/* 弹幕便利贴上浮 / 横向飘 */
+@keyframes float-up {
+  0% { transform: translateY(8px); opacity: 0; }
+  12%, 88% { opacity: 1; }
+  100% { transform: translateY(-8px); opacity: .85; }
+}
+@keyframes ticker-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.animate-ticker { animation: ticker-x var(--ticker-duration, 60s) linear infinite; }
+.ticker-paused:hover .animate-ticker { animation-play-state: paused; }
+
+/* 两侧渐隐遮罩(横向滚动容器) */
+.edge-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+
+/* 玻璃面板 */
+.glass {
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.10);
+}
+.glass-light {
+  background: rgba(255,255,255,.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(11,31,58,.08);
+}
+
+/* 火焰渐变文字 */
+.text-gradient-fire {
+  background: linear-gradient(100deg, var(--brand-orange), var(--brand-gold) 60%, #F6D88A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-gradient-navy {
+  background: linear-gradient(100deg, var(--brand-navy), var(--brand-navy-soft));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 金色发丝边 */
+.hairline-gold { border: 1px solid color-mix(in oklab, var(--brand-gold) 55%, transparent); }
+
+/* 小标题 kicker */
+.kicker {
+  font-size: 11px;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* 浅色纸纹底(学员端式区块) */
+.bg-paper {
+  background-color: var(--brand-cream);
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(242,140,40,.05), transparent 38%),
+    radial-gradient(circle at 86% 86%, rgba(0,59,122,.05), transparent 42%);
+}
+
+/* 胶片颗粒/暗角(照片占位更像照片) */
+.film-grain::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+.vignette::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0,0,0,.30));
+  pointer-events: none;
+}
+
+/* 进入淡入(纯 CSS,首屏滚动友好) */
+@keyframes rise-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.rise-in { animation: rise-in .7s cubic-bezier(.22,1,.36,1) both; }
+
+/* 缓慢光晕呼吸(首屏凤凰) */
+@keyframes glow-breathe { 0%,100% { opacity: .55; transform: scale(1); } 50% { opacity: .9; transform: scale(1.06); } }
+.glow-breathe { animation: glow-breathe 6s ease-in-out infinite; }
+
+/* 便利贴 */
+.wish-note {
+  position: relative;
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 24px -14px rgba(11,31,58,.45);
+  line-height: 1.55;
+}
+.wish-note::before {
+  content: "";
+  position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+  width: 40px; height: 14px;
+  background: rgba(255,255,255,.5);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 2px;
+}
+
+/* 数字滚动等宽 */
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* DISC 维度色 */
+:root {
+  --disc-d: #E2563B;
+  --disc-i: #F2A93B;
+  --disc-s: #2E9E7B;
+  --disc-c: #2E6FB0;
+}
