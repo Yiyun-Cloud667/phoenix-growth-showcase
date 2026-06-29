@@ -225,10 +225,6 @@ function MemberPointModal({ member, onClose }: { member: Member; onClose: () => 
             </div>
           ))}
         </div>
-
-        <div className="mt-4 rounded-lg bg-[var(--brand-orange)]/8 p-3 text-[13px] italic leading-relaxed text-foreground/70 ring-1 ring-[var(--brand-orange)]/15">
-          “{member.quote}”
-        </div>
       </div>
     </Modal>
   );
